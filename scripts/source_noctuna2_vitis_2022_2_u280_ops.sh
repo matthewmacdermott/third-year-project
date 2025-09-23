@@ -12,7 +12,7 @@ SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 module reset
 
 module load fpga
-module load xilinx/xrt/2.16
+module load xilinx/xrt/2.14
 
 module load compiler/GCC/11.3.0
 module load lang/Python/3.10.4-GCCcore-11.3.0
@@ -31,12 +31,14 @@ export C_INCLUDE_PATH=${OPS_INSTALL_PATH}c/include/:$C_INCLUDE_PATH
 export CPLUS_INCLUDE_PATH=${OPS_INSTALL_PATH}c/include/:$CPLUS_INCLUDE_PATH
 export CPP_INCLUDE_PATH=${OPS_INSTALL_PATH}c/include/:$CPP_INCLUDE_PATH
 
-# 4: ############ PYTHON VIRTUAL ENV SETUP #############
+# 3: ############ PYTHON VIRTUAL ENV SETUP #############
 
 if [ -f ${OPS_INSTALL_PATH}/../ops_translator/ops_venv/bin/activate ]; then
     source ${OPS_INSTALL_PATH}/../ops_translator/ops_venv/bin/activate
 else
     source ${OPS_INSTALL_PATH}/../ops_translator/setup_venv.sh
 fi
+
+# 4: ############ GRAPHVIZ SETUP #############
 
 module load vis/Graphviz/5.0.0-GCCcore-11.3.0
