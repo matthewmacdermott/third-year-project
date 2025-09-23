@@ -93,6 +93,11 @@ Power profile data recorded as ```*_hls_power_profile.csv``` where the prefix wi
 Additionally, OPS is packaged with support scripts to generate profile summaries, which are added as artifacts. Further details in section [Build OPS/Section 4](#4-run-profile-scripts-for-data-summaries) on how to run these support scripts to generate summaries.
 
 ### Build OPS
+
+The setup given below is tested on the [KAUST hardware acceleration cluster](https://www.hpc.kaust.edu.sa/), where the setup script can be directly used if you're using KAUST. Otherwise, use them as templates to create your own scripts. 
+
+NOTE: We have tested our work on the Paderborn PC2-noctuna2 cluster. If you are running it on PC2-noctuna2 or a similar cluster in PC2, follow the instructions on [Build and Run on PC2-Noctuna2 cluster](#build-and-run-on-pc2-noctuna2-cluster). 
+
 #### 1. Setup environment
 
 Sample setup script for Vitis 2022.2, [source_kaust_vitis_2022_2_ops.sh](../scripts/source_kaust_vitis_2022_2_ops.sh) is given. Please modify it accordingly before the source. NOTE: Make sure the environment variable OPS_HLS_ARTIFACT_DIR is set as mentioned in the main [README.md Getting Started - Step 2](../README.md#step-2-add-environment-variable).
@@ -184,6 +189,34 @@ NOTE: ```<power_batch_size_need_to_be_estimated>``` is the required batch size y
 
 
 ### Appendix
+
+#### Build and Run on PC2-Noctuna2 cluster
+
+This is an alternative setup if you're using Paderborn PC2.
+
+##### 1. Environment setup on PC2
+
+Source the setup script in a front-facing login node for Vitis 2022.2 [source_noctuna2_vitis_2022_2_ops.sh](../scripts/source_noctuna2_vitis_2022_2_ops.sh) for initial setup and build the OPS library for HLS. This source file will be used again and again when using with Slurm scripts later as well. 
+
+##### 2. Build OPS on PC2
+
+After finishing step 1, follow the general build step in [here](#2-build)
+
+##### 3. Build + Run Apps on PC2
+
+Sample changes only added to [codegen_apps/poisson2](./poisson2d), where the slurm build and run scripts are added. 
+
+NOTE: The scripts have ```#SBATCH -A <your_project_acronym>``` slurm flag needs to be set accordingly. Similarly, set your email in ```#SBATCH --mail-user <your_mail_address>``` for job notification (optional).
+
+
+To build, call sbatch with,
+
+    sbatch ./sbatch_build_script_2022_2.sh
+
+And after successfully building, you can runthe  app by calling with,
+
+    sbatch ./sbatch_run_script_2022_2.sh
+
 
 #### Pre-build binary details 
 
