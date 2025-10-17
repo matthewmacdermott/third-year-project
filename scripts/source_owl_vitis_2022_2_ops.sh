@@ -69,6 +69,7 @@ export CPLUS_INCLUDE_PATH=${OPS_INSTALL_PATH}c/include/:$CPLUS_INCLUDE_PATH
 export CPP_INCLUDE_PATH=${OPS_INSTALL_PATH}c/include/:$CPP_INCLUDE_PATH
 
 # 4: ############ PYTHON VIRTUAL ENV SETUP #############
+module load Python/3.12.0
 
 if [ -f ${OPS_INSTALL_PATH}/../ops_translator/ops_venv/bin/activate ]; then
     source ${OPS_INSTALL_PATH}/../ops_translator/ops_venv/bin/activate
