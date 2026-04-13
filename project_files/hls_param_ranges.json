@@ -1,0 +1,12 @@
+{
+  "vector_factor": [2, 4, 8, 16],
+  "axis_interconnect_buff_size": [1024, 2048, 4096, 8192],
+  "mem_vector_factor": [4, 8, 16],
+  "iter_par_factor": [1, 2, 4, 7, 8, 9, 12, 16, 18, 20, 22, 24, 27, 30],
+  "maxi_depth": [2048, 4096, 8192, 16384],
+  "maxi_read_burst_length": [32, 64, 128, 256],
+  "maxi_write_burst_length": [32, 64, 128, 256],
+  "num_read_outstanding": [2, 4, 8, 16],
+  "num_write_outstanding": [2, 4, 8, 16],
+  "hls_interconnect_buff_size": [8, 10, 16, 32, 50, 64, 128, 256, 360, 512]
+}

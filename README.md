@@ -1,95 +1,89 @@
-# OPS HLS Benchmark artifacts
+# HLS Stencil Optimiser: Setup and Run Guide
 
-[![DOI](https://zenodo.org/badge/1027688133.svg)](https://doi.org/10.5281/zenodo.16785478)
+## 1. Prerequisites
 
-The repository contains benchmark applications and results from work carried out in ongoing work, "[Automatic Code-Generation for Accelerating Structured-Mesh-Based Explicit Numerical Solvers on FPGAs](#publication)", to be published in the PACT25 conference. The artifact is organized into (1) code-generated FPGA applications, (2) hand-coded FPGA applications, and (3) GPU applications,  along with data artifacts and utility scripts. 
+- Linux shell
+- Access to the PC2 Noctua 2 system
+- Git access to `git@github.com:matthewmacdermott/third-year-project.git`
+- Xilinx/Vitis environment available on your system
+- Python 3.8+
 
-Our work is a derivative work on OPS-DSL, which is a mandatory dependency; together with each type of application mentioned above requires additional dependencies and setups. 
-Please follow the Getting Started section of this document for instructions to set up OPS and the common environment setups. Afterwards, please follow the README.md files inside each application type (ie gpu_apps, codgen_apps & handcoded_apps) for properly setting up and running applications. 
+## 2. One-time setup
 
-Each OPS application (ie, poisson2d) will have a separate project for each target to maintain reproducability and ease of setups, though the source codes are identical, with the exception to batched GPU OPS application where you'll find slight differences in OPS-API as we are using OPS_batched APIs which is not yet merged to the current version of OPS.
+Run the following commands on the Noctua2 system:
 
-## Getting Started
+```bash
+project_name="3yp"
+git clone git@github.com:matthewmacdermott/third-year-project.git $project_name
+cd $project_name
+export OPS_HLS_ARTIFACT_DIR=$(pwd)
+git submodule update --recursive --init
+source scripts/source_noctuna2_vitis_2023_2_ops.sh
+cd $OPS_INSTALL_PATH/hls
+make
+```
 
-The benchmark applications are structured into independent projects with their own Makefile and runscript. The target-specific requirements are in each section README.md files.
+What these commands do:
 
-This repository is organized in the following manner:
+1. Clones the repository into `3yp`
+2. Sets `OPS_HLS_ARTIFACT_DIR` to the repo root
+3. Initializes git submodules
+4. Sources `scripts/source_noctuna2_vitis_2023_2_ops.sh`
+5. Builds OPS HLS components via `make` in `$OPS_INSTALL_PATH/hls`
 
-<pre> ops-hls-pact25-artifact/ 
-    ├── README.md 
-    ├── codegen_apps/
-    │   ├── README.md 
-    │   ├── app_1/
-    │   │   ├── u280_project/
-    │   │   └── vck5000_project/
-    │   ├── app_2/
-    │     ....
-    ├── gpu_apps/
-    │   ├── README.md 
-    │   ├── app_1/h100_project/ 
-    │   ├── app_2/h100_project/
-    │     ....
-    ├── handcoded_apps/
-    │   ├── README.md 
-    │   ├── app_1/
-    │   │   ├── u280_project/
-    │   │   └── vck5000_project/
-    │   ├── app_2/
-    │     ....
-    ├── scripts/
-    ├── <font color="blue">OPS/</font>
-    ├── <font color="blue">OPS_batched/</font>
-    ├── .git
-    └── .gitmodules</pre>
+After setup completes, return to the project root (`3yp`) before launching
+the UI:
 
-NOTE: There's no universal setup for this benchmark as our benchmark is on heterogenious devices and systems. Follow through REDME.md in each section. 
+```bash
+cd "$OPS_HLS_ARTIFACT_DIR"
+```
 
-* [codegen_apps](./codegen_apps): - Contains codegen app projects for Xilinx(AMD) FPGA Devices with our novel OPS HLS code-generation.
-* [handcoded_apps](./hancoded_apps): - Contains handcoded app projects for Xilinx(AMD) FPGA Devices.
-* [gpu_apps](./gpu_apps): - Contains codegen app projects for H100 GPU with batching (except for some applications) with OPS.
-* [scripts](./scripts): - Support scripts for environment setup and data operations. 
+## 3. Launch the UI
 
-### Step 1: Update Sub-Modules
+From the project root:
 
-We have included relevant OPS branches as git submodules ([OPS](./OPS), [OPS_batched](./OPS_batched)) herewith this repository. Please run,
+```bash
+./run_system.sh
+```
 
-        git submodule update --recursive
-        
-If any submodule is not cloned, please use the --init flag with the above command.
+This launcher will:
 
-### Step 2: Add Environment Variable
+- Source the Xilinx/OPS environment if needed
+- Pick a Python >= 3.8
+- Activate a local virtualenv if one exists
+- Install missing Python dependencies from `project_files/requirements.txt` when needed
+- Start the interactive UI (`project_files.system.main`)
 
-        export OPS_HLS_ARTIFACT_DIR=<absolute_path_to_artifacts>
+## 4. First run flow in UI
 
-This environment variable will be useful to track relative paths. 
+Once the UI opens, the common path is:
 
-### Step 3: Target specific setups
+1. `Train a new model` (or pick an existing one)
+2. `Run recommendation -> build -> results`
+3. Choose model and stencil
+4. Choose strategy (`balanced`, `resource`, `performance`)
+5. Review top recommendations
+6. Optionally apply config and submit build/probe jobs
 
-Set up the environment and target requirements. Check the setup guideline in each sub-section README.md. 
+## 5. If `run_system.sh` is not executable
 
-### Step 4: App execution workflow
+```bash
+chmod +x run_system.sh
+./run_system.sh
+```
 
-1. Source correct environment setup
-2. In the makefile, select ```PROFILE``` or ```POWER_PROFILE``` flag for profile results. 
-3. (FOR FPGAs) In the makefile, provide the correct ```PLATFORM``` and ```TARGET=(sw_emu\hw_emu\hw)``` mode.
-4. (FOR FPGAs) Make sure in the OPS config JSON file to provide ```device_id``` matching the PLATFORM if the environment has multiple FPGA devices. Otherwise, OPS translator will take the first device as the target device. 
-5. (FOR FPGAs) Build only the host with prebuild XCLBIN by running ```make build_hls_host```.
-6. ```make run_app``` or ```make run_hls_app``` to run experiments. 
-7. If the above step does not work, do a clean build.
-   
-## Contact Us
+## 6. Troubleshooting
 
-If any support is needed related to OPS-HLS, please contact:
-beniel.thileepan@warwick.ac.uk
+- Environment not loaded:
+  - Run `source scripts/source_noctuna2_vitis_2023_2_ops.sh`
+- Missing Python packages:
+  - `./run_system.sh` auto-installs from `project_files/requirements.txt`
 
-## License
+## 7. Notes
 
-This repository's original code is licensed under the MIT License — see [LICENSE](LICENSE).
+- The setup script is intended for fresh setup on a new workspace.
+- If you already have this repository checked out and submodules initialized, you can usually skip setup and run `./run_system.sh` directly.
 
-It also includes third-party components under different terms:
+## 8. Running Generated HLS xclbins
 
-- [OPS](./OPS), [OPS_batched](./OPS_batched) — BSD 3-Clause License (see [OPS/LICENSE](./OPS/LICENSE)).
-
-## Publication
-
-B. Thileepan, S.A. Fahmy, and G.R. Mudalige. (2025). Automatic Code-Generation for Accelerating Structured-Mesh-Based Explicit Numerical Solvers on FPGAs. To appear in the International Conference on Parallel Architectures and Compilation Techniques (PACT '25) Nov 03–06, 2025, Irvine, California, USA. ACM, New York, NY, USA.
+All detailed instructions for running stencil applications after building with the UI are in `codegen_apps/README.md`

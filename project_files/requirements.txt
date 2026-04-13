@@ -1,0 +1,10 @@
+# Python dependencies for HLS Synthesis Optimizer
+# Compatible with Python 3.6+
+numpy>=1.19.0
+torch>=1.10.0
+libclang>=13.0.0
+cached-property>=1.5.0
+rustworkx>=0.12.0
+pcpp>=1.30
+jaro-winkler>=1.0
+fparser>=0.0.16

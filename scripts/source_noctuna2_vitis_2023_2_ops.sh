@@ -12,6 +12,7 @@ SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 module reset
 
 module load fpga
+module load xilinx/vitis/23.2
 module load xilinx/xrt/2.16
 
 module load compiler/GCC/11.3.0
